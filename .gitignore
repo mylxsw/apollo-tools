@@ -1,0 +1,8 @@
+.idea/
+main
+tmp/
+.fpm
+.Makefile.local
+vendor/
+.scannerwork/
+bin
