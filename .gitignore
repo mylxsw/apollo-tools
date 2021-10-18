@@ -6,3 +6,4 @@ tmp/
 vendor/
 .scannerwork/
 bin
+.env
