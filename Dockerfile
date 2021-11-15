@@ -1,4 +1,5 @@
 FROM golang:1.17 AS server-build
+ENV GOPROXY=https://goproxy.io,direct
 RUN mkdir -p /data
 WORKDIR /data
 COPY go.mod go.sum ./
