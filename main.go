@@ -15,7 +15,7 @@ import (
 func main() {
 
 	var appID, serverAddr, accessSecret, cluster, namespace, output, format, onChange string
-	var forever bool
+	var forever, emtpyValueQuote bool
 
 	flag.StringVar(&appID, "app-id", "", "app id")
 	flag.StringVar(&serverAddr, "server-addr", "http://apollo-config:8080", "apollo server addr")
@@ -24,6 +24,7 @@ func main() {
 	flag.StringVar(&namespace, "namespace", "application", "apollo namespace")
 	flag.StringVar(&output, "output", "stdout", "输出文件路径")
 	flag.StringVar(&format, "format", "%s=%s", "输出格式: %s: %s")
+	flag.BoolVar(&emtpyValueQuote, "empty-quote", false, "空值是否转换为空字符串，添加双引号")
 	flag.BoolVar(&forever, "forever", false, "持续运行，监听 key 的变化，实时更新文件")
 	flag.StringVar(&onChange, "on-change", "", "配置变更时执行的命令")
 
@@ -45,7 +46,12 @@ func main() {
 	var updateFunc = func() {
 		lines := make([]string, 0)
 		for _, k := range client.GetAllKeys() {
-			lines = append(lines, fmt.Sprintf(format, k, client.GetString(k)))
+			val := client.GetString(k)
+			if emtpyValueQuote && val == "" {
+				val = `""`
+			}
+
+			lines = append(lines, fmt.Sprintf(format, k, val))
 		}
 
 		if output == "stdout" {
